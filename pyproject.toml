@@ -1,13 +1,12 @@
 [tool.poetry]
-name = "ds_project"
+name = "autograde_essay"
 version = "0.1.0"
-description = "Template repository to start your Data Science project from"
-authors = ["Vladilav Goncharenko <vladislav.goncharenko@phystech.edu>"]
-maintainers = ["Vladislav Goncharenko <vladislav.goncharenko@phystech.edu>"]
+description = "Machine learning model which will give scoring to student-written essays"
+authors = ["Maxim Andreyko <mandreiko@edu.hse.ru>"]
+maintainers = ["Maxim Andreyko <mandreiko@edu.hse.ru>"]
 readme = "README.md"
-repository = "https://github.com/v-goncharenko/data-science-template"
+repository = "https://github.com/MaxAndreyko/autograde-essay"
 documentation = "TBD"
-keywords = ["reproducibility", "data science", "machine learning", "template"]
 license = "Apache-2.0"
 
 [tool.poetry.dependencies]
@@ -15,14 +14,13 @@ python = "~3.9"
 
 [tool.poetry.dev-dependencies]
 pre-commit = "^2.16.0"
-pytest = "^6.2.5"
 
 [tool.black]
 line-length = 90
 target-version = ["py39"]
 
 [tool.isort]
-src_paths = ["ds_project"]
+src_paths = ["autograde_essay"]
 profile = "black"
 line_length = 90
 lines_after_imports = 2
