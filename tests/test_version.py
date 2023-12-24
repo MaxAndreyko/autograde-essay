@@ -1,5 +1,5 @@
-import ds_project
+import autograde_essay
 
 
 def test_version():
-    assert ds_project.__version__ == "0.1.0"
+    assert autograde_essay.__version__ == "0.1.0"
