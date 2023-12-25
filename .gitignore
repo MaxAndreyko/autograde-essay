@@ -134,3 +134,6 @@ dmypy.json
 # CSV files
 *.tsv
 *.csv
+
+# Models
+*.pkl
