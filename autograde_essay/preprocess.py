@@ -1,3 +1,4 @@
+import logging
 import re
 
 import nltk
@@ -6,6 +7,9 @@ import pandas as pd
 from gensim.models import KeyedVectors, Word2Vec
 from nltk.corpus import stopwords
 from omegaconf import DictConfig
+
+
+log = logging.getLogger(__name__)
 
 
 def essay_to_wordlist(essay_v: str, remove_stopwords: bool) -> tuple:
@@ -72,12 +76,12 @@ def prep_train_data(train_data: pd.DataFrame, cfg: DictConfig) -> tuple:
     Returns:
         tuple: Tuple of features np.array and answers np.array
     """
-    print("NLTK punkt downloading started")
+    log.info("NLTK punkt downloading started")
     nltk.download("punkt")
-    print("Download finished.\n")
-    print("NLTK punkt downloading started")
+    log.info("Download finished.\n")
+    log.info("NLTK punkt downloading started")
     nltk.download("stopwords")
-    print("Download finished.\n")
+    log.info("Download finished.\n")
 
     train_data = train_data.dropna(axis=1)
     scores = train_data["domain1_score"]
@@ -88,7 +92,7 @@ def prep_train_data(train_data: pd.DataFrame, cfg: DictConfig) -> tuple:
     for essay in train_data:
         sentences += essay_to_sentences(essay, remove_stopwords=True)
 
-    print("Training Word2Vec Model...")
+    log.info("Training Word2Vec Model...")
     model = Word2Vec(
         sentences,
         workers=cfg["preprocess"]["num_workers"],
@@ -97,11 +101,11 @@ def prep_train_data(train_data: pd.DataFrame, cfg: DictConfig) -> tuple:
         window=cfg["preprocess"]["context"],
         sample=cfg["preprocess"]["downsampling"],
     )
-    print("Word2Vec Model trained successfully!")
+    log.info("Word2Vec Model trained successfully!")
     # model.init_sims(replace=True)
-    print("Saving Word2Vec Model...")
+    log.info("Saving Word2Vec Model...")
     model.wv.save_word2vec_format(cfg["path"]["word2vec"], binary=True)
-    print("Word2Vec Model saved successfully!\n")
+    log.info("Word2Vec Model saved successfully!\n")
 
     clean_train_essays = []
 
@@ -124,9 +128,9 @@ def prep_test_data(test_data: pd.DataFrame, cfg: DictConfig) -> np.array:
         np.array: Features np.array
     """
 
-    print("Loading Word2Vec Model ...")
+    log.info("Loading Word2Vec Model ...")
     model = KeyedVectors.load_word2vec_format(cfg["path"]["word2vec"], binary=True)
-    print("Loading finished.")
+    log.info("Loading finished.")
 
     test_data = test_data.dropna(axis=1)
     test_data = test_data["essay"]

@@ -1,3 +1,4 @@
+import logging
 import time
 
 import hydra
@@ -8,6 +9,9 @@ from sklearn.ensemble import RandomForestClassifier
 from metrics import calc_metrics
 from preprocess import prep_train_data
 from utils import read_data, save_model
+
+
+log = logging.getLogger(__name__)
 
 
 def train_model(
@@ -23,8 +27,16 @@ def train_model(
     Returns:
         RandomForestClassifier: Trained RFC model
     """
-    model = RandomForestClassifier(**params)
-    model.fit(x_train, y_train)
+    model = RandomForestClassifier(**params["params"])
+    step = params["log"]["step"]
+    for n in range(
+        params["params"]["n_estimators"], params["log"]["n_estimators"] + step, step
+    ):
+        model.fit(x_train, y_train)
+        log.info(
+            f"ESTIMATORS: {n} METRICS: {calc_metrics(y_train, model.predict(x_train))}"
+        )
+        model.n_estimators += 10
     return model
 
 
@@ -32,26 +44,26 @@ def train_model(
 def main(cfg: DictConfig):
     """Main train function"""
     start = time.time()
-    print("================ Train Data is being download ... ================ ")
+    log.info("================ Train Data is being download ... ================ ")
     train_data = read_data(cfg["path"]["train"], cfg["repo"])
-    print("Data donwloaded successfully!\n")
+    log.info("Data donwloaded successfully!\n")
 
-    print("================ Preparing data started ... ================ ")
+    log.info("================ Preparing data started ... ================ ")
     X, y = prep_train_data(train_data, cfg)
-    print("Data preparation finished.\n")
+    log.info("Data preparation finished.\n")
 
-    print("================ Model training started ================")
-    trained_model = train_model(cfg["model"]["params"], X, y)
-    print("Model has been fitted.\n")
+    log.info("================ Model training started ================")
+    trained_model = train_model(cfg["model"], X, y)
+    log.info("Model has been fitted.\n")
 
-    print(f"Metrics: {calc_metrics(y, trained_model.predict(X))}\n")
+    log.info(f"Metrics: {calc_metrics(y, trained_model.predict(X))}\n")
 
-    print("Saving model ...")
+    log.info("Saving model ...")
     save_model(trained_model, cfg["path"]["save"])
-    print("Model saved. \n")
+    log.info("Model saved. \n")
 
     stop = time.time()
-    print(f"Time spent (min): {(stop - start) / 60}")
+    log.info(f"Time spent (min): {(stop - start) / 60}")
 
 
 if __name__ == "__main__":

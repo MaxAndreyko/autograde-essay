@@ -1,3 +1,4 @@
+import logging
 import time
 
 import hydra
@@ -7,6 +8,9 @@ from omegaconf import DictConfig
 
 from preprocess import prep_test_data
 from utils import load_model, read_data
+
+
+log = logging.getLogger(__name__)
 
 
 def export_pred(test_data: pd.DataFrame, pred: np.array, export_path: str) -> None:
@@ -26,30 +30,30 @@ def export_pred(test_data: pd.DataFrame, pred: np.array, export_path: str) -> No
 def main(cfg: DictConfig):
     """Main inference function"""
     start = time.time()
-    print("================ Test Data is being download ... ================ ")
+    log.info("================ Test Data is being download ... ================ ")
     test_data = read_data(cfg["path"]["test"], cfg["repo"])
-    print("Data donwloaded successfully!\n")
+    log.info("Data donwloaded successfully!\n")
 
-    print("================ Preparing data started ... ================ ")
+    log.info("================ Preparing data started ... ================ ")
     X = prep_test_data(test_data, cfg)
-    print("Data preparation finished.\n")
+    log.info("Data preparation finished.\n")
 
-    print("Model loading ...")
+    log.info("Model loading ...")
     model = load_model(cfg["path"]["save"])
-    print("Loading finished.\n")
+    log.info("Loading finished.\n")
 
-    print("Model predicting...")
+    log.info("Model predicting...")
     pred = model.predict(X)
-    print("Model saving predictions ...")
+    log.info("Model saving predictions ...")
     export_pred(test_data, pred, cfg["path"]["pred"])
-    print(
+    log.info(
         f"""
     ****** All done!
     ****** Predictions saved to: {cfg["path"]["save"]}
           """
     )
     stop = time.time()
-    print(f"Time spent (min): {(stop - start) / 60}")
+    log.info(f"Time spent (min): {(stop - start) / 60}")
 
 
 if __name__ == "__main__":
