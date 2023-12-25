@@ -17,12 +17,23 @@ REPO_PATH = "https://github.com/MaxAndreyko/autograde-essay/"
 def train_model(
     params: dict, x_train: np.array, y_train: np.array
 ) -> RandomForestClassifier:
+    """Trains Random Forest Classifier models
+
+    Args:
+        params (dict): Hyperparameters for RFC model
+        x_train (np.array): Train data
+        y_train (np.array): Train data answers
+
+    Returns:
+        RandomForestClassifier: Trained RFC model
+    """
     model = RandomForestClassifier(**params)
     model.fit(x_train, y_train)
     return model
 
 
 def main():
+    """Main train function"""
     start = time.time()
     print("================ Train Data is being download ... ================ ")
     train_data = read_data(TRAIN_PATH, REPO_PATH)
