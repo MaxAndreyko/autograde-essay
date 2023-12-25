@@ -130,3 +130,7 @@ dmypy.json
 
 # Binary files
 *.bin
+
+# CSV files
+*.tsv
+*.csv
