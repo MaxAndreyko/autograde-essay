@@ -17,6 +17,7 @@ isort="5.13.2"
 dvc = "^3.36.1"
 dvc-gdrive = "^3.0.0"
 pandas = "^2.1.4"
+gensim = "^4.3.2"
 
 [tool.poetry.dev-dependencies]
 pre-commit = "^2.16.0"
