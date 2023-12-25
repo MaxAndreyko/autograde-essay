@@ -1,6 +1,5 @@
 import re
 
-import hydra
 import nltk
 import numpy as np
 import pandas as pd
@@ -64,7 +63,6 @@ def get_avg_feature_vecs(
     return essay_feature_vecs
 
 
-@hydra.main(version_base=None, config_path="config", config_name="config")
 def prep_train_data(train_data: pd.DataFrame, cfg: DictConfig) -> tuple:
     """Prepare data for training
 
@@ -100,7 +98,7 @@ def prep_train_data(train_data: pd.DataFrame, cfg: DictConfig) -> tuple:
         sample=cfg["preprocess"]["downsampling"],
     )
     print("Word2Vec Model trained successfully!")
-    model.init_sims(replace=True)
+    # model.init_sims(replace=True)
     print("Saving Word2Vec Model...")
     model.wv.save_word2vec_format(cfg["path"]["word2vec"], binary=True)
     print("Word2Vec Model saved successfully!\n")
@@ -116,7 +114,6 @@ def prep_train_data(train_data: pd.DataFrame, cfg: DictConfig) -> tuple:
     return np.array(train_vectors), np.array(scores)
 
 
-@hydra.main(version_base=None, config_path="config", config_name="config")
 def prep_test_data(test_data: pd.DataFrame, cfg: DictConfig) -> np.array:
     """Prepare data for testing
 

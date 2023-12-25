@@ -28,7 +28,7 @@ def train_model(
     return model
 
 
-@hydra.main(version_base=None, config_path="config", config_name="config")
+@hydra.main(version_base=None, config_path="../config", config_name="config")
 def main(cfg: DictConfig):
     """Main train function"""
     start = time.time()
@@ -37,7 +37,7 @@ def main(cfg: DictConfig):
     print("Data donwloaded successfully!\n")
 
     print("================ Preparing data started ... ================ ")
-    X, y = prep_train_data(train_data)
+    X, y = prep_train_data(train_data, cfg)
     print("Data preparation finished.\n")
 
     print("================ Model training started ================")

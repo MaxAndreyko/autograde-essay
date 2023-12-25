@@ -22,7 +22,7 @@ def export_pred(test_data: pd.DataFrame, pred: np.array, export_path: str) -> No
     df.to_csv(export_path)
 
 
-@hydra.main(version_base=None, config_path="config", config_name="config")
+@hydra.main(version_base=None, config_path="../config", config_name="config")
 def main(cfg: DictConfig):
     """Main inference function"""
     start = time.time()
@@ -31,7 +31,7 @@ def main(cfg: DictConfig):
     print("Data donwloaded successfully!\n")
 
     print("================ Preparing data started ... ================ ")
-    X = prep_test_data(test_data)
+    X = prep_test_data(test_data, cfg)
     print("Data preparation finished.\n")
 
     print("Model loading ...")
