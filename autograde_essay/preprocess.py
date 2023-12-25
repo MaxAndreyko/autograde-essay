@@ -1,19 +1,12 @@
 import re
 
+import hydra
 import nltk
 import numpy as np
 import pandas as pd
 from gensim.models import KeyedVectors, Word2Vec
 from nltk.corpus import stopwords
-
-
-# Initializing variables for word2vec model.
-num_features = 300
-min_word_count = 40
-num_workers = 8
-context = 10
-downsampling = 1e-3
-word2vec_model_path = "./autograde_essay/models/word2vecmodel.bin"
+from omegaconf import DictConfig
 
 
 def essay_to_wordlist(essay_v: str, remove_stopwords: bool) -> tuple:
@@ -71,7 +64,8 @@ def get_avg_feature_vecs(
     return essay_feature_vecs
 
 
-def prep_train_data(train_data: pd.DataFrame) -> tuple:
+@hydra.main(version_base=None, config_path="config", config_name="config")
+def prep_train_data(train_data: pd.DataFrame, cfg: DictConfig) -> tuple:
     """Prepare data for training
 
     Args:
@@ -99,28 +93,31 @@ def prep_train_data(train_data: pd.DataFrame) -> tuple:
     print("Training Word2Vec Model...")
     model = Word2Vec(
         sentences,
-        workers=num_workers,
-        vector_size=num_features,
-        min_count=min_word_count,
-        window=context,
-        sample=downsampling,
+        workers=cfg["preprocess"]["num_workers"],
+        vector_size=cfg["preprocess"]["num_features"],
+        min_count=cfg["preprocess"]["min_word_count"],
+        window=cfg["preprocess"]["context"],
+        sample=cfg["preprocess"]["downsampling"],
     )
     print("Word2Vec Model trained successfully!")
     model.init_sims(replace=True)
     print("Saving Word2Vec Model...")
-    model.wv.save_word2vec_format(word2vec_model_path, binary=True)
+    model.wv.save_word2vec_format(cfg["path"]["word2vec"], binary=True)
     print("Word2Vec Model saved successfully!\n")
 
     clean_train_essays = []
 
     for essay_text in train_data:
         clean_train_essays.append(essay_to_wordlist(essay_text, remove_stopwords=True))
-    train_vectors = get_avg_feature_vecs(clean_train_essays, model, num_features)
+    train_vectors = get_avg_feature_vecs(
+        clean_train_essays, model, cfg["preprocess"]["num_features"]
+    )
 
     return np.array(train_vectors), np.array(scores)
 
 
-def prep_test_data(test_data: pd.DataFrame) -> np.array:
+@hydra.main(version_base=None, config_path="config", config_name="config")
+def prep_test_data(test_data: pd.DataFrame, cfg: DictConfig) -> np.array:
     """Prepare data for testing
 
     Args:
@@ -131,7 +128,7 @@ def prep_test_data(test_data: pd.DataFrame) -> np.array:
     """
 
     print("Loading Word2Vec Model ...")
-    model = KeyedVectors.load_word2vec_format(word2vec_model_path, binary=True)
+    model = KeyedVectors.load_word2vec_format(cfg["path"]["word2vec"], binary=True)
     print("Loading finished.")
 
     test_data = test_data.dropna(axis=1)
@@ -146,6 +143,8 @@ def prep_test_data(test_data: pd.DataFrame) -> np.array:
     for essay_text in test_data:
         clean_test_essays.append(essay_to_wordlist(essay_text, remove_stopwords=True))
 
-    test_vectors = get_avg_feature_vecs(clean_test_essays, model, num_features)
+    test_vectors = get_avg_feature_vecs(
+        clean_test_essays, model, cfg["preprocess"]["num_features"]
+    )
 
     return np.array(test_vectors)

@@ -1,0 +1,22 @@
+model:
+  name: rfc
+  params:
+    n_estimators: 200
+    random_state: 0
+    max_depth: 12
+
+path:
+  train: data/training_set_rel3.tsv
+  test: data/test_set.tsv
+  pred: data/predictions.csv
+  save: autograde_essay/models/rf_model.pkl
+  wor2vec: autograde_essay/models/word2vecmodel.bin
+
+repo: https://github.com/MaxAndreyko/autograde-essay/
+
+preprocess:
+  num_features: 300
+  min_word_count: 40
+  num_workers: 8
+  context: 10
+  downsampling: 0.001

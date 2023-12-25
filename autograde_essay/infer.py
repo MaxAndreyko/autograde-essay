@@ -1,16 +1,12 @@
 import time
 
+import hydra
 import numpy as np
 import pandas as pd
+from omegaconf import DictConfig
 
 from preprocess import prep_test_data
 from utils import load_model, read_data
-
-
-PRED_PATH = "data/predictions.csv"
-TEST_PATH = "data/test_set.tsv"
-MODEL_SAVE_PATH = "autograde_essay/models/rf_model.pkl"
-REPO_PATH = "https://github.com/MaxAndreyko/autograde-essay/"
 
 
 def export_pred(test_data: pd.DataFrame, pred: np.array, export_path: str) -> None:
@@ -26,11 +22,12 @@ def export_pred(test_data: pd.DataFrame, pred: np.array, export_path: str) -> No
     df.to_csv(export_path)
 
 
-def main():
+@hydra.main(version_base=None, config_path="config", config_name="config")
+def main(cfg: DictConfig):
     """Main inference function"""
     start = time.time()
     print("================ Test Data is being download ... ================ ")
-    test_data = read_data(TEST_PATH, REPO_PATH)
+    test_data = read_data(cfg["path"]["test"], cfg["repo"])
     print("Data donwloaded successfully!\n")
 
     print("================ Preparing data started ... ================ ")
@@ -38,17 +35,17 @@ def main():
     print("Data preparation finished.\n")
 
     print("Model loading ...")
-    model = load_model(MODEL_SAVE_PATH)
+    model = load_model(cfg["path"]["save"])
     print("Loading finished.\n")
 
     print("Model predicting...")
     pred = model.predict(X)
     print("Model saving predictions ...")
-    export_pred(test_data, pred, PRED_PATH)
+    export_pred(test_data, pred, cfg["path"]["pred"])
     print(
         f"""
     ****** All done!
-    ****** Predictions saved to: {MODEL_SAVE_PATH}
+    ****** Predictions saved to: {cfg["path"]["save"]}
           """
     )
     stop = time.time()

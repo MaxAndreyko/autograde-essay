@@ -1,17 +1,13 @@
 import time
 
+import hydra
 import numpy as np
+from omegaconf import DictConfig
 from sklearn.ensemble import RandomForestClassifier
 
 from metrics import calc_metrics
 from preprocess import prep_train_data
 from utils import read_data, save_model
-
-
-TRAIN_PATH = "data/training_set_rel3.tsv"
-MODEL_PARAMS = {"n_estimators": 200, "random_state": 0, "max_depth": 12}
-MODEL_SAVE_PATH = "autograde_essay/models/rf_model.pkl"
-REPO_PATH = "https://github.com/MaxAndreyko/autograde-essay/"
 
 
 def train_model(
@@ -32,11 +28,12 @@ def train_model(
     return model
 
 
-def main():
+@hydra.main(version_base=None, config_path="config", config_name="config")
+def main(cfg: DictConfig):
     """Main train function"""
     start = time.time()
     print("================ Train Data is being download ... ================ ")
-    train_data = read_data(TRAIN_PATH, REPO_PATH)
+    train_data = read_data(cfg["path"]["train"], cfg["repo"])
     print("Data donwloaded successfully!\n")
 
     print("================ Preparing data started ... ================ ")
@@ -44,13 +41,13 @@ def main():
     print("Data preparation finished.\n")
 
     print("================ Model training started ================")
-    trained_model = train_model(MODEL_PARAMS, X, y)
+    trained_model = train_model(cfg["model"]["params"], X, y)
     print("Model has been fitted.\n")
 
     print(f"Metrics: {calc_metrics(y, trained_model.predict(X))}\n")
 
     print("Saving model ...")
-    save_model(trained_model, MODEL_SAVE_PATH)
+    save_model(trained_model, cfg["path"]["save"])
     print("Model saved. \n")
 
     stop = time.time()
