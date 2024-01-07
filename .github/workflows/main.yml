@@ -40,6 +40,8 @@ jobs:
         run: poetry install
         
       - name: Execute train script
+        env:
+          GDRIVE_CREDENTIALS_DATA: ${{ secrets.DVC_GDRIVE_SERVICE_ACC_CREDITS }}
         run: |
           source .venv/bin/activate
           python ./autograde_essay/train.py
