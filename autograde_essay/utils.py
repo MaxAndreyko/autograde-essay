@@ -1,11 +1,14 @@
+import json
+import logging
+import os
+
 import dvc.api
 import joblib
-import json
-import os
 import pandas as pd
-import logging
+
 
 log = logging.getLogger(__name__)
+
 
 def read_data(
     data_path: str, repo, path2creds: str, encoding: str = "ISO-8859-1", sep="\t"
@@ -28,7 +31,7 @@ def read_data(
             os.environ["GDRIVE_CREDENTIALS_DATA"] = json.dumps(json.load(f))
     except FileNotFoundError as e:
         log.error("Error: %s", e)
-    
+
     with dvc.api.open(data_path, repo=repo, encoding=encoding) as fd:
         data = pd.read_csv(fd, sep=sep)
     return data

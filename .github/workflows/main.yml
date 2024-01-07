@@ -1,7 +1,7 @@
 name: check_train
 on:
-    push:
-      branches: [ "master" ]
+  push:
+    branches: ["master"]
 
 jobs:
   build:
@@ -27,11 +27,13 @@ jobs:
         uses: actions/cache@v3
         with:
           path: .venv
-          key: venv-${{ runner.os }}-${{ steps.setup-python.outputs.python-version }}-${{ hashFiles('**/poetry.lock') }}
+          key:
+            venv-${{ runner.os }}-${{ steps.setup-python.outputs.python-version
+            }}-${{ hashFiles('**/poetry.lock') }}
       - name: Install dependencies
         if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
         run: poetry install
-        
+
       - name: Execute train script
         env:
           GDRIVE_CREDENTIALS_DATA: ${{ secrets.DVC_GDRIVE_SERVICE_ACC_CREDITS }}
