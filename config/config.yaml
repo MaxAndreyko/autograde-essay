@@ -16,6 +16,7 @@ path:
   pred: data/predictions.csv
   save: autograde_essay/models/rf_model.pkl
   word2vec: autograde_essay/models/word2vecmodel.bin
+  creds: "gdrive_service_account_credentials.json"
 
 repo: https://github.com/MaxAndreyko/autograde-essay/
 
