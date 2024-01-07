@@ -35,7 +35,7 @@ def main(cfg: DictConfig):
     log.info("Data donwloaded successfully!\n")
 
     log.info("================ Preparing data started ... ================ ")
-    X = prep_test_data(test_data, cfg)
+    X_test = prep_test_data(test_data, cfg)
     log.info("Data preparation finished.\n")
 
     log.info("Model loading ...")
@@ -43,7 +43,7 @@ def main(cfg: DictConfig):
     log.info("Loading finished.\n")
 
     log.info("Model predicting...")
-    pred = model.predict(X)
+    pred = model.predict(X_test)
     log.info("Model saving predictions ...")
     export_pred(test_data, pred, cfg["path"]["pred"])
     log.info(
