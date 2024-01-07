@@ -1,5 +1,8 @@
 import logging
 import time
+import os
+import base64
+import json
 
 import hydra
 import numpy as np
@@ -45,7 +48,7 @@ def main(cfg: DictConfig):
     """Main train function"""
     start = time.time()
     log.info("================ Train Data is being download ... ================ ")
-    train_data = read_data(cfg["path"]["train"], cfg["repo"])
+    train_data = read_data(cfg["path"]["train"], cfg["repo"], cfg["path"]["creds"])
     log.info("Data donwloaded successfully!\n")
 
     log.info("================ Preparing data started ... ================ ")

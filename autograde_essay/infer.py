@@ -31,7 +31,7 @@ def main(cfg: DictConfig):
     """Main inference function"""
     start = time.time()
     log.info("================ Test Data is being download ... ================ ")
-    test_data = read_data(cfg["path"]["test"], cfg["repo"])
+    test_data = read_data(cfg["path"]["test"], cfg["repo"], cfg["path"]["creds"])
     log.info("Data donwloaded successfully!\n")
 
     log.info("================ Preparing data started ... ================ ")
