@@ -8,6 +8,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Add DVC service account credentials virable
+        uses: iterative/setup-dvc@v1
+        env:
+          GDRIVE_CREDENTIALS_DATA: ${{ secrets.DVC_GDRIVE_SERVICE_ACC_CREDITS }}
       - name: Checkout repo content
         uses: actions/checkout@v3
       - name: Setup python
