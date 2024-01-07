@@ -10,6 +10,14 @@ jobs:
     steps:
       - name: Checkout repo content
         uses: actions/checkout@v3
+      - name: Setup DVC
+        uses: iterative/setup-dvc@v1
+      - name: Setup Google Drive credentials
+        env:
+          GDRIVE_SERVICE_ACCOUNT_JSON: ${{ secrets.DVC_GDRIVE_SERVICE_ACC_CREDITS }}
+        run: |
+            echo "$GDRIVE_SERVICE_ACCOUNT_JSON" > dvc-remote-connections.json
+            dvc remote modify storage gdrive_service_account_json_file_path dvc-remote-connections.json
       - name: Setup python
         id: setup-python
         uses: actions/setup-python@v4
