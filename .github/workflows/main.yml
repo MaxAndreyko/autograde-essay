@@ -12,13 +12,6 @@ jobs:
         uses: actions/checkout@v3
       - name: Setup DVC
         uses: iterative/setup-dvc@v1
-      - name: Setup Google Drive credentials
-        env:
-          GDRIVE_CREDENTIALS_DATA: ${{ secrets.DVC_GDRIVE_SERVICE_ACC_CREDITS }}
-        run: |
-          dvc pull
-        #     echo "$GDRIVE_SERVICE_ACCOUNT_JSON" > "/home/runner/work/autograde-essay/gdrive_service_account_credentials.json"
-        #     dvc remote modify storage gdrive_service_account_json_file_path /home/runner/work/autograde-essay/gdrive_service_account_credentials.json
       - name: Setup python
         id: setup-python
         uses: actions/setup-python@v4
@@ -46,6 +39,8 @@ jobs:
           source .venv/bin/activate
           python ./autograde_essay/train.py
       - name: Execute inference script
+        env:
+          GDRIVE_CREDENTIALS_DATA: ${{ secrets.DVC_GDRIVE_SERVICE_ACC_CREDITS }}
         run: |
           source .venv/bin/activate
           python ./autograde_essay/infer.py
