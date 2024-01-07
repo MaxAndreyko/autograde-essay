@@ -49,14 +49,14 @@ def main(cfg: DictConfig):
     log.info("Data donwloaded successfully!\n")
 
     log.info("================ Preparing data started ... ================ ")
-    X, y = prep_train_data(train_data, cfg)
+    X_train, y_train = prep_train_data(train_data, cfg)
     log.info("Data preparation finished.\n")
 
     log.info("================ Model training started ================")
-    trained_model = train_model(cfg["model"], X, y)
+    trained_model = train_model(cfg["model"], X_train, y_train)
     log.info("Model has been fitted.\n")
 
-    log.info(f"Metrics: {calc_metrics(y, trained_model.predict(X))}\n")
+    log.info(f"Metrics: {calc_metrics(y_train, trained_model.predict(X_train))}\n")
 
     log.info("Saving model ...")
     save_model(trained_model, cfg["path"]["save"])
