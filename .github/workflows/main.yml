@@ -18,7 +18,6 @@ jobs:
         run: |
             echo "$GDRIVE_SERVICE_ACCOUNT_JSON" > "/home/runner/work/autograde-essay/gdrive_service_account_credentials.json"
             dvc remote modify storage gdrive_service_account_json_file_path /home/runner/work/autograde-essay/gdrive_service_account_credentials.json
-            dvc push
       - name: Setup python
         id: setup-python
         uses: actions/setup-python@v4
